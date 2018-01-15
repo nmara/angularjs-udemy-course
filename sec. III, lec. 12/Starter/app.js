@@ -1,14 +1,11 @@
 var myApp = angular.module('myApp', []);
 
 myApp.controller('mainController', function($scope) {
-    
-    $scope.name = 'Jane Doe';
-    $scope.occupation = 'Coder';
-    
-    $scope.getname = function() {
-        return 'John Doe';
+
+    var searchPeople = function(firstName, lastName, height, age, occupation) {
+        return "Jane Doe";
     }
-    
-    console.log($scope);
-    
+
+    console.log(searchPeople);
+
 });
