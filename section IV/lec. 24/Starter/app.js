@@ -1,6 +1,6 @@
 var myApp = angular.module('myApp', []);
 
-myApp.controller('mainController', ['$scope', '$filter', function ($scope, $filter) {
+myApp.controller('mainController', ['$scope', '$filter', '$http', function ($scope, $filter, $http) {
 
     $scope.handle = '';
 
@@ -10,15 +10,23 @@ myApp.controller('mainController', ['$scope', '$filter', function ($scope, $filt
 
     $scope.characters = 5;
 
-    var rulesrequest = new XMLHttpRequest();
-    rulesrequest.onreadystatechange = function () {
-        $scope.$apply(function () {
-            if (rulesrequest.readyState == 4 && rulesrequest.status == 200) {
-                $scope.rules = JSON.parse(rulesrequest.responseText);
-            }
+    $http.get('/api') // you put an address of API in "" and brackets
+        .success(function (result) {
+            $scope.rules = result;
+        }) // if it gets data, success method will run
+        .error(function (data, status) {
+            console.log(data);
+        }); // if there is an error, error method will run
+
+    $scope.newRule = "";
+    $scope.addRule = function() {
+        $http.post('/api', { newRule: $scope.newRule}) // it gives new data to the server (API)!!!
+        .success(function(result) {
+            $scope.rules = result;
+            $scope.newRule = '';
+        })
+        .error(function(data, status) {
+            console.log(data);
         });
     }
-    rulesrequest.open("GET", "http://localhost:54765/api", true);
-    rulesrequest.send();
-
 }]);
