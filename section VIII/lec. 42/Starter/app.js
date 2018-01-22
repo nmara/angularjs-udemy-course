@@ -39,7 +39,7 @@ weatherApp.controller('forecastController', ['$scope', '$resource', 'cityService
     
     $scope.weatherResult = $scope.weatherAPI.get({ q:$scope.city });
     
-    $scope.contertToCelsius = function(degK) {
+    $scope.convertToCelsius = function(degK) {
         return Math.round(degK - 273.15);
     }
     
@@ -47,3 +47,19 @@ weatherApp.controller('forecastController', ['$scope', '$resource', 'cityService
         return new Date(dt * 1000); //to get right date
     }
 }]);
+
+// Directives
+
+weatherApp.directive("weatherReport", function() {
+    return {
+        restrict: 'E',
+        templateUrl: 'directives/weatherReport.html',
+        replace: true,
+        scope: { //isolating scope
+            weatherTemp: "=", //because object
+            convertToStandard: "&", //because function
+            convertToDate: "&", //again - function
+            dateFormat: "@" //beacuse string     
+        }
+    }
+});
