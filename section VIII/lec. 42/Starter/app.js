@@ -11,18 +11,33 @@ weatherApp.config(function($routeProvider) {
         templateUrl: "pages/home.html",
         controller: 'homeController'
     })
-    .when("/forecast", {
+    .when("/!/forecast", {
         templateUrl: "pages/forecast.html",
         controller: "forecastController"
     })
 });
 
+//Custom service
+
+weatherApp.service('cityService', function() {
+    this.city = "New York, NY";
+});
+
 //Controllers
 
-weatherApp.controller('homeController', ['$scope', function($scope){
-    
+weatherApp.controller('homeController', ['$scope', 'cityService', function($scope, cityService){
+    $scope.city = cityService.city;
+     $scope.$watch('city', function() {
+        cityService.city = $scope.city;
+    })
 }]);
 
-weatherApp.controller('forecastController', ['$scope', function($scope){
+weatherApp.controller('forecastController', ['$scope', '$resource', 'cityService', function($scope, $resource, cityService){
+    $scope.city = cityService.city;
     
+    $scope.weatherAPI = $resource("http://api.openweathermap.org/data/2.5/forecast?q=London,us&mode=xml&appid=ceb1e19ab012fa84e9442205e74b43cc", { callback: "JSON_CALLBACK" }, { get: {method: "JSONP" }});
+    
+    $scope.weatherResult = $scope.weatherAPI.get({ q: $scope.city });
+    
+    console.log($scope.weatherResult);
 }]);
